@@ -1,0 +1,4 @@
+EROOR/t2024/06/06 11:39:14 handlers.go:153: Error 1054 (42S22): Unknown column 'password' in 'where clause'
+EROOR/t2024/06/06 11:41:06 handlers.go:154: Error 1054 (42S22): Unknown column 'password' in 'where clause'
+EROOR/t2024/06/06 11:41:15 handlers.go:154: Error 1054 (42S22): Unknown column 'password' in 'where clause'
+EROOR/t2024/06/06 11:41:33 handlers.go:154: Error 1054 (42S22): Unknown column 'password' in 'where clause'
