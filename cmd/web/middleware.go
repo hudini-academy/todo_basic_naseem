@@ -61,15 +61,15 @@ func (app *application) recoverPanic(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+// here we are creating a middleware ,that checks if the authenticated is false ,redirect to login page
 func (app *application) authenticateMiddleware(next http.Handler) http.Handler {
-    fn := func(w http.ResponseWriter, r *http.Request) {
-        if !app.session.GetBool(r, "Authenticated") {
-            app.session.Put(r, "flash", "Log In Before Accessing the resources")
-            http.Redirect(w, r, "/login", http.StatusFound)
-            return
-        }
-        next.ServeHTTP(w, r)
-    }
-    return http.HandlerFunc(fn)
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		if !app.session.GetBool(r, "Authenticated") {
+			app.session.Put(r, "flash", "Log In Before Accessing the resources")
+			http.Redirect(w, r, "/user/login", http.StatusFound)
+			return
+		}
+		next.ServeHTTP(w, r)
+	}
+	return http.HandlerFunc(fn)
 }
-

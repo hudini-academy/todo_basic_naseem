@@ -2,8 +2,6 @@ package mysql
 
 import (
 	"database/sql"
-
-	"naseem/pkg/models"
 )
 
 type UserModel struct {
@@ -33,10 +31,4 @@ func (m *UserModel) Authenticate(name, password string) (bool, error) {
 	}
 	defer rows.Close()
 	return rows.Next(), nil
-}
-
-// We'll use the Get method to fetch details for a specific user based
-// on their user ID.
-func (m *UserModel) Get(id int) (*models.User, error) {
-	return nil, nil
 }

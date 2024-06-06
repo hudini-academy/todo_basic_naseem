@@ -5,6 +5,7 @@
 <html>
 <head></head>
 <body>
+<h1>Sign Up</h1>
 <form action='/user/signup' method='POST' novalidate>
 
 <div>
@@ -26,7 +27,13 @@
 <input type='submit' value='Signup'>
 </div>
 </form>
+ {{if .}}
+                <div class="flash-message">
+               <p>Message : {{.}} </p>
+                </div>
+            {{end}}
 <a href="/user/login">Login</a>
+
 </body>
 </html>
 

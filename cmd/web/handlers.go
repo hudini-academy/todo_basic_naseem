@@ -83,9 +83,10 @@ func (app *application) deleteTask(w http.ResponseWriter, r *http.Request) {
 func (app *application) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	// fetch the id from the form
 	id, _ := strconv.Atoi(r.FormValue("id"))
-	// updating the db
 
+	// checking whther the field length is not empty then upadte ,else show message field cant be empty
 	if len(strings.TrimSpace(r.FormValue("updateTask"))) != 0 {
+		// updating the db
 		_, err := app.todo.Update(id, r.FormValue("updateTask"))
 
 		if err != nil {
@@ -106,26 +107,35 @@ func (app *application) signupUserForm(w http.ResponseWriter, r *http.Request) {
 		"./ui/html/signup.page.tmpl",
 		"./ui/html/base.layout.tmpl",
 	}
-
+	// we are parsing the file
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
 		app.errorLog.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 		return
 	}
-	ts.Execute(w, nil)
+	// here we are executing the file and attaching flash for the session message
+	ts.Execute(w, app.session.PopString(r, "flash"))
 }
 func (app *application) signupUser(w http.ResponseWriter, r *http.Request) {
 	// fmt.Fprintln(w, "Create a new user...")
+	// we are fetching the values  from form
 	userName := r.FormValue("name")
 	userEmail := r.FormValue("email")
 	userPassword := r.FormValue("password")
+	// inserting users database
 	err := app.users.Insert(userName, userEmail, userPassword)
+	// if the users is there ,it shows users already exist and redirect to sign up page
+	// else show the message sign up successfully and redirecting to home page and also we are passing a key to middleware
 	if err != nil {
 		app.errorLog.Println(err.Error())
-		http.Error(w, "Internal Server Error", 500)
+		app.session.Put(r, "flash", "User already exist")
+		http.Redirect(w, r, "/user/signup", http.StatusSeeOther)
+	} else {
+		app.session.Put(r, "Authenticated", true)
+		app.session.Put(r, "flash", "sign up successfull!")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
-	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
 func (app *application) loginUserForm(w http.ResponseWriter, r *http.Request) {
@@ -134,40 +144,46 @@ func (app *application) loginUserForm(w http.ResponseWriter, r *http.Request) {
 		"./ui/html/login.page.tmpl",
 		"./ui/html/base.layout.tmpl",
 	}
-
+	// parsing the file pages
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
 		app.errorLog.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 		return
 	}
+	// here we are executing the file and attaching flash for the session message
 	ts.Execute(w, app.session.PopString(r, "flash"))
 }
 func (app *application) loginUser(w http.ResponseWriter, r *http.Request) {
 	// fmt.Fprintln(w, "Authenticate and login the user...")
+	// fetching values from the form
 	userName := r.FormValue("name")
 	userPassword := r.FormValue("password")
+	// we are authenticating whether the username and password is correct and return true
 	isUser, err := app.users.Authenticate(userName, userPassword)
 	log.Print(isUser)
 	if err != nil {
 		app.errorLog.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 	}
+	// if the user is true,we pass key to middleware and return true to middleware and also show login successfull message
 	if isUser {
 		app.session.Put(r, "Authenticated", true)
 		app.session.Put(r, "flash", " Login successfully!")
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 
 	} else {
-		app.session.Put(r, "flash", " Login Failed!")
+		app.session.Put(r, "flash", " name or password is incorrect!")
 		http.Redirect(w, r, "/user/login", http.StatusSeeOther)
-		app.session.Put(r, "Authenticated", true)
+		app.session.Put(r, "Authenticated", false)
 
 	}
 
 }
 func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
 	// fmt.Fprintln(w, "Logout the user...")
+	// here we are passing authentiction failed and redirect to login page
+
 	app.session.Put(r, "Authenticated", false)
 	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 
