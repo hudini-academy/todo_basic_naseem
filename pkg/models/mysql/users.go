@@ -10,6 +10,7 @@ type UserModel struct {
 
 // We'll use the Insert method to add a new record to the users table.
 func (m *UserModel) Insert(name, email, password string) error {
+
 	stmt := `INSERT INTO users(name,email,hashed_password,created)
              VALUES(?, ?,?,UTC_TIMESTAMP())`
 
