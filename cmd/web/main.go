@@ -17,7 +17,8 @@ type application struct {
 	infoLog  *log.Logger
 	todo     *mysql.TodoModel
 	session  *sessions.Session
-	users *mysql.UserModel
+	users    *mysql.UserModel
+	special  *mysql.SpecialModel
 }
 
 func main() {
@@ -43,7 +44,8 @@ func main() {
 		infoLog:  infoLog,
 		todo:     &mysql.TodoModel{DB: db},
 		session:  session,
-		users: &mysql.UserModel{DB: db},
+		users:    &mysql.UserModel{DB: db},
+		special:  &mysql.SpecialModel{DB: db},
 	}
 
 	// we are creating an instance of http.Server and adding fields to it .

@@ -50,8 +50,21 @@ func (app *application) addTask(w http.ResponseWriter, r *http.Request) {
 	//errors := make(map[string]string)
 
 	todoText := r.FormValue("Name")
+	todoTag := r.FormValue("Tags")
+	// todoTag1 := strings.Split(todoTag, ",")
+
+	if strings.Contains(todoText, "special") {
+		_, err := app.special.Insert(todoText)
+
+		if err != nil {
+			app.errorLog.Println(err.Error())
+			http.Error(w, "Internal Server Error", 500)
+		}
+
+	}
 	if len(strings.TrimSpace(todoText)) != 0 {
-		_, err := app.todo.Insert(todoText)
+		_, err := app.todo.Insert(todoText, todoTag)
+
 		if err != nil {
 			app.errorLog.Println(err.Error())
 			http.Error(w, "Internal Server Error", 500)
@@ -60,7 +73,6 @@ func (app *application) addTask(w http.ResponseWriter, r *http.Request) {
 	} else {
 		app.session.Put(r, "flash", " item field cant be empty!")
 	}
-
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
@@ -68,10 +80,18 @@ func (app *application) addTask(w http.ResponseWriter, r *http.Request) {
 func (app *application) deleteTask(w http.ResponseWriter, r *http.Request) {
 	// fetch the id from the form
 	id, _ := strconv.Atoi(r.FormValue("id"))
+	name := r.FormValue("Name")
+
 	// deleting the item from db
 	_, err := app.todo.Delete(id)
 	if err != nil {
 		log.Println(err)
+	}
+	if id > 0 {
+		_, err := app.special.Delete(name)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 
 	app.session.Put(r, "flash", "item  deleted successfully!")
@@ -187,4 +207,39 @@ func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
 	app.session.Put(r, "Authenticated", false)
 	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 
+}
+func (app *application) SpecialTask(w http.ResponseWriter, r *http.Request) {
+
+	// here we are calling the specialTask function to fetch the all items which have special prefix
+	getSpecialItems, err := app.todo.Special()
+	if err != nil {
+		app.errorLog.Println(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+
+	//  retrieving the home template
+	files := []string{
+		"./ui/html/special.page.tmpl",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.errorLog.Println(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+	// Execute the template and show the slice of allTodo
+	// panic("ur system under maintance")
+	err = ts.Execute(w, struct {
+		Tasks []*models.Todo
+		Flash string
+	}{
+		Tasks: getSpecialItems,
+		Flash: app.session.PopString(r, "flash"),
+	})
+	if err != nil {
+		app.errorLog.Println(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+	}
 }

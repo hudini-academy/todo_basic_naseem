@@ -1,11 +1,8 @@
-EROOR/t2024/06/06 11:39:14 handlers.go:153: Error 1054 (42S22): Unknown column 'password' in 'where clause'
-EROOR/t2024/06/06 11:41:06 handlers.go:154: Error 1054 (42S22): Unknown column 'password' in 'where clause'
-EROOR/t2024/06/06 11:41:15 handlers.go:154: Error 1054 (42S22): Unknown column 'password' in 'where clause'
-EROOR/t2024/06/06 11:41:33 handlers.go:154: Error 1054 (42S22): Unknown column 'password' in 'where clause'
-EROOR/t2024/06/06 13:41:57 handlers.go:125: Error 1062 (23000): Duplicate entry 'abdulla@gmail' for key 'users.users_uc_email'
-EROOR/t2024/06/06 13:42:13 handlers.go:125: Error 1062 (23000): Duplicate entry 'abdulla@gmail' for key 'users.users_uc_email'
-EROOR/t2024/06/06 13:49:04 handlers.go:125: Error 1062 (23000): Duplicate entry 'abdulla@gmail' for key 'users.users_uc_email'
-EROOR/t2024/06/06 14:31:04 handlers.go:125: Error 1062 (23000): Duplicate entry 'abdulla@gmail' for key 'users.users_uc_email'
-EROOR/t2024/06/06 14:31:15 handlers.go:125: Error 1062 (23000): Duplicate entry 'abdulla@gmail' for key 'users.users_uc_email'
-EROOR/t2024/06/06 14:32:49 handlers.go:125: Error 1062 (23000): Duplicate entry 'email' for key 'users.users_uc_email'
-EROOR/t2024/06/06 14:33:13 handlers.go:125: Error 1062 (23000): Duplicate entry 'abdulla@gmail' for key 'users.users_uc_email'
+EROOR/t2024/06/07 07:09:31 handlers.go:56: Error 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where todos.id=special.id' at line 2
+EROOR/t2024/06/07 07:15:48 handlers.go:56: Error 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where todos.id=special.id' at line 2
+EROOR/t2024/06/07 09:19:05 handlers.go:43: template: home.page.tmpl:36:31: executing "home.page.tmpl" at <.Tags>: can't evaluate field Tags in type *models.Todo
+EROOR/t2024/06/07 09:19:06 handlers.go:43: template: home.page.tmpl:36:31: executing "home.page.tmpl" at <.Tags>: can't evaluate field Tags in type *models.Todo
+EROOR/t2024/06/07 09:22:44 handlers.go:17: sql: Scan error on column index 2, name "tags": converting NULL to string is unsupported
+EROOR/t2024/06/07 09:22:54 handlers.go:17: sql: Scan error on column index 2, name "tags": converting NULL to string is unsupported
+EROOR/t2024/06/07 09:54:31 handlers.go:43: template: home.page.tmpl:48:16: executing "home.page.tmpl" at <.>: range can't iterate over {113 naseem hello,hi , bye 2024-06-07 09:46:35 +0000 UTC 2025-06-07 09:46:35 +0000 UTC}
+EROOR/t2024/06/07 09:55:06 handlers.go:43: template: home.page.tmpl:48:16: executing "home.page.tmpl" at <.Tags>: range can't iterate over hello,hi , bye

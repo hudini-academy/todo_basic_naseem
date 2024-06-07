@@ -1,0 +1,31 @@
+<html>
+<head>
+    <title>Tasks</title>
+    <link rel="stylesheet" href='/static/main.css'>
+</head>
+<body>
+</form>
+</div>
+       {{if .Flash}}
+                <div class="flash-message">
+               <p>Message : {{.Flash}} </p>
+                </div>
+            {{end}}
+<ol>
+    <p>All Tasks</p>
+
+        {{range .Tasks}}
+        <li>
+        <div>
+            <p class="title">{{.Name}}</p>
+        </div>
+    <form method="POST" action="/deletetask">
+            <input type="hidden" name="id" value="{{.ID}}">
+            <input type="submit" name="del" value="Remove"/> 
+    </form>  
+   
+        </li>
+        {{end}}
+</ol>
+</body>
+</html>

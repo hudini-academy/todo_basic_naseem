@@ -11,13 +11,13 @@ type TodoModel struct {
 }
 
 // This will insert a new snippet into the database.
-func (m *TodoModel) Insert(name string) (int, error) {
-	stmt := `INSERT INTO todos(name,created, expires)
-             VALUES(?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? DAY))`
+func (m *TodoModel) Insert(name string, tags string) (int, error) {
+	stmt := `INSERT INTO todos(name,tags,created, expires)
+             VALUES(?,?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? DAY))`
 
 	expiry := 365 // Placeholder value of 1 year for expiry
 
-	_, err := m.DB.Exec(stmt, name, expiry)
+	_, err := m.DB.Exec(stmt, name, tags, expiry)
 	if err != nil {
 		return 0, err
 	}
@@ -27,7 +27,7 @@ func (m *TodoModel) Insert(name string) (int, error) {
 // This will fetch the all items in database
 func (m *TodoModel) Latest() ([]*models.Todo, error) {
 
-	stmt := `SELECT id, name, created, expires FROM todos`
+	stmt := `SELECT id, name, tags,created, expires FROM todos`
 
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
@@ -43,7 +43,7 @@ func (m *TodoModel) Latest() ([]*models.Todo, error) {
 		// Create a pointer to a new zeroed Todo struct.
 		s := &models.Todo{}
 
-		err = rows.Scan(&s.ID, &s.Name, &s.Created, &s.Expires)
+		err = rows.Scan(&s.ID, &s.Name, &s.Tags, &s.Created, &s.Expires)
 		if err != nil {
 			return nil, err
 		}
@@ -73,4 +73,34 @@ func (m *TodoModel) Update(id int, name string) (int, error) {
 		return 0, err
 	}
 	return 0, nil
+}
+
+func (m *TodoModel) Special() ([]*models.Todo, error) {
+
+	stmt := `SELECT id, name, created, expires FROM todos where name like 'special%'`
+
+	rows, err := m.DB.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Initialize an empty slice to hold the models.Todo objects.
+	Todo := []*models.Todo{}
+
+	// database connection.
+	for rows.Next() {
+		// Create a pointer to a new zeroed Todo struct.
+		s := &models.Todo{}
+
+		err = rows.Scan(&s.ID, &s.Name, &s.Created, &s.Expires)
+		if err != nil {
+			return nil, err
+		}
+		Todo = append(Todo, s)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return Todo, nil
 }
